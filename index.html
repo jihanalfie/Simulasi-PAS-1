@@ -1,0 +1,1416 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ujian Evaluasi Informatika & IT Support</title>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --success: #16a34a;
+            --danger: #dc2626;
+            --border-color: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .quiz-container {
+            background: var(--card-bg);
+            max-width: 750px;
+            width: 100%;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+
+        /* Login Screen Styles */
+        .login-screen {
+            text-align: center;
+        }
+
+        .login-screen h2 {
+            margin-bottom: 10px;
+            color: #0f172a;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: var(--text-main);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus {
+            border-color: var(--primary-color);
+        }
+
+        .login-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .login-btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .error-msg {
+            color: var(--danger);
+            font-size: 0.9rem;
+            margin-top: 10px;
+            display: none;
+            font-weight: 500;
+        }
+
+        /* Quiz Interface */
+        .quiz-interface {
+            display: none;
+        }
+
+        header {
+            margin-bottom: 24px;
+            border-bottom: 2px dashed var(--border-color);
+            padding-bottom: 15px;
+        }
+
+        .header-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        h1 {
+            font-size: 1.4rem;
+            color: #0f172a;
+        }
+
+        .timer-box {
+            background-color: #fef2f2;
+            border: 1px solid #fee2e2;
+            color: var(--danger);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .progress-container {
+            background-color: var(--border-color);
+            height: 8px;
+            border-radius: 4px;
+            width: 100%;
+            margin-top: 15px;
+        }
+
+        .progress-bar {
+            background-color: var(--primary-color);
+            height: 100%;
+            width: 0%;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .question-number {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .question-text {
+            font-size: 1.125rem;
+            font-weight: 500;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            list-style: none;
+        }
+
+        .option-btn {
+            background-color: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 14px 20px;
+            text-align: left;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+            line-height: 1.4;
+        }
+
+        .option-btn:hover:not([disabled]) {
+            border-color: var(--primary-color);
+            background-color: #f8fafc;
+            transform: translateY(-1px);
+        }
+
+        .option-btn:disabled {
+            cursor: not-allowed;
+        }
+
+        .option-btn.correct {
+            background-color: #dcfce7;
+            border-color: var(--success);
+            color: #14532d;
+            font-weight: 600;
+        }
+
+        .option-btn.wrong {
+            background-color: #fee2e2;
+            border-color: var(--danger);
+            color: #7f1d1d;
+        }
+
+        .rationale-box {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f1f5f9;
+            border-left: 4px solid var(--primary-color);
+            border-radius: 4px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            display: none;
+        }
+
+        footer {
+            margin-top: 24px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .next-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: none;
+        }
+
+        .next-btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .result-screen {
+            text-align: center;
+            display: none;
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: #eff6ff;
+            border: 5px solid var(--primary-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin: 20px auto;
+        }
+
+        .student-info-tag {
+            background-color: #f1f5f9;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: var(--text-main);
+        }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container">
+    <div id="login-box" class="login-screen">
+        <h2>Ujian Evaluasi Informatika</h2>
+        <p style="color: var(--text-muted); margin-bottom: 20px;">Silakan masukkan identitas dan token akses Anda</p>
+        
+        <div class="form-group">
+            <label for="student-name">Nama Lengkap Siswa</label>
+            <input type="text" id="student-name" placeholder="Contoh: Ahmad Fauzi">
+        </div>
+        
+        <div class="form-group">
+            <label for="access-token">Token Akses Ujian</label>
+            <input type="password" id="access-token" placeholder="Masukkan token khusus">
+        </div>
+
+        <button id="login-btn" class="login-btn">Masuk & Mulai Ujian</button>
+        <p id="error-message" class="error-msg">Token salah atau nama belum diisi!</p>
+    </div>
+
+    <div id="quiz-box" class="quiz-interface">
+        <header>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h1>100 Latihan Informatika</h1>
+                <div id="user-display" class="student-info-tag">Siswa: -</div>
+            </div>
+            <div class="header-meta">
+                <div id="progress-text" class="question-number">Pertanyaan 1 dari 100</div>
+                <div id="timer" class="timer-box">⏱ Sisa Waktu: 30:00</div>
+            </div>
+            <div class="progress-container">
+                <div id="progress-bar" class="progress-bar"></div>
+            </div>
+        </header>
+
+        <main>
+            <div id="question" class="question-text">Memuat pertanyaan...</div>
+            <div id="options" class="options-list"></div>
+            <div id="rationale" class="rationale-box"></div>
+        </main>
+
+        <footer>
+            <button id="next-btn" class="next-btn">Pertanyaan Berikutnya</button>
+        </footer>
+    </div>
+
+    <div id="result-box" class="result-screen">
+        <h2>Ujian Selesai!</h2>
+        <p id="completion-message" style="color: var(--text-muted); margin-top: 8px;">Berikut adalah hasil pencapaian kompetensi Anda:</p>
+        <div id="score" class="score-circle">0</div>
+        <p id="result-summary" style="font-size: 1.1rem; font-weight: 500; margin-bottom: 10px;"></p>
+        <p id="score-details" style="color: var(--text-muted); margin-bottom: 15px;"></p>
+        <p id="student-result-name" style="font-weight: bold; color: var(--text-main);"></p>
+    </div>
+</div>
+
+<script>
+    const validTokens = ["SISWA01", "SISWA02", "SISWA03", "ITCOMP2026", "OPERATORMUDA", "INFORMATIKA30"];
+
+    const quizData = [
+        {
+            question: "Dalam proyek aplikasi perpustakaan, tim membagi pekerjaan menjadi modul login, katalog buku, peminjaman, dan pengembalian. Konsep berpikir komputasional yang diterapkan adalah ...",
+            options: [
+                { text: "A. Simulasi", isCorrect: false, rationale: "Simulasi berkaitan dengan pemodelan proses, bukan memecah pekerjaan." },
+                { text: "B. Dekomposisi", isCorrect: true, rationale: "Dekomposisi berarti memecah masalah atau pekerjaan besar menjadi bagian-bagian kecil agar lebih mudah dikelola." },
+                { text: "C. Abstraksi", isCorrect: false, rationale: "Abstraksi berfokus pada informasi penting dan mengabaikan detail yang tidak relevan." },
+                { text: "D. Pengenalan pola", isCorrect: false, rationale: "Pengenalan pola adalah kemampuan menemukan kesamaan pada beberapa masalah." }
+            ]
+        },
+        {
+            question: "Seorang siswa membuat jadwal belajar dan memecahnya menjadi kegiatan membaca, mencatat, dan latihan soal. Ini merupakan contoh ...",
+            options: [
+                { text: "A. Kompresi", isCorrect: false, rationale: "Kompresi adalah pemadatan ukuran file/data." },
+                { text: "B. Dekomposisi", isCorrect: true, rationale: "Membagi jadwal menjadi beberapa kegiatan terpisah merupakan penerapan dekomposisi." },
+                { text: "C. Pengurutan", isCorrect: false, rationale: "Pengurutan menyusun data berdasarkan aturan tertentu." },
+                { text: "D. Enkripsi", isCorrect: false, rationale: "Enkripsi adalah pengamanan data dengan penyandian." }
+            ]
+        },
+        {
+            question: "Ketika membuat denah sekolah, detail seperti motif sepatu siswa tidak dicantumkan karena tidak diperlukan. Prinsip yang digunakan adalah ...",
+            options: [
+                { text: "A. Algoritma", isCorrect: false, rationale: "Algoritma adalah urutan langkah penyelesaian masalah." },
+                { text: "B. Pengenalan pola", isCorrect: false, rationale: "Pengenalan pola mencari kesamaan struktur/data." },
+                { text: "C. Abstraksi", isCorrect: true, rationale: "Abstraksi berfokus pada informasi penting untuk tujuan tertentu dan mengabaikan detail tidak relevan." },
+                { text: "D. Iterasi", isCorrect: false, rationale: "Iterasi adalah proses pengulangan." }
+            ]
+        },
+        {
+            question: "Pada beberapa soal matematika, siswa menyadari bahwa semuanya dapat diselesaikan dengan mencari selisih dua bilangan. Kemampuan mengenali kesamaan ini disebut ...",
+            options: [
+                { text: "A. Pengenalan pola", isCorrect: true, rationale: "Pengenalan pola adalah kemampuan menemukan kesamaan atau keteraturan pada beberapa masalah." },
+                { text: "B. Output", isCorrect: false, rationale: "Output adalah hasil pemrosesan data." },
+                { text: "C. Debugging", isCorrect: false, rationale: "Debugging adalah proses menemukan dan memperbaiki kesalahan program." },
+                { text: "D. Dekomposisi", isCorrect: false, rationale: "Dekomposisi adalah memecah masalah besar menjadi bagian kecil." }
+            ]
+        },
+        {
+            question: "Urutan instruksi yang logis untuk menyelesaikan suatu masalah disebut ...",
+            options: [
+                { text: "A. Algoritma", isCorrect: true, rationale: "Algoritma merupakan urutan langkah yang logis, jelas, dan sistematis untuk menyelesaikan masalah." },
+                { text: "B. Perangkat keras", isCorrect: false, rationale: "Perangkat keras adalah komponen fisik komputer." },
+                { text: "C. Jaringan", isCorrect: false, rationale: "Jaringan adalah sistem komputer terhubung." },
+                { text: "D. Variabel", isCorrect: false, rationale: "Variabel adalah penampung nilai dalam pemrograman." }
+            ]
+        },
+        {
+            question: "Sebelum menyusun algoritma membuat teh, tindakan yang paling tepat adalah ...",
+            options: [
+                { text: "A. Menentukan langkah dan urutannya", isCorrect: true, rationale: "Langkah dasar penyusunan algoritma adalah menentukan urutan tindakan secara sistematis." },
+                { text: "B. Menyalakan komputer", isCorrect: false, rationale: "Membuat teh adalah algoritma manual yang tidak membutuhkan komputer." },
+                { text: "C. Mengurutkan file", isCorrect: false, rationale: "Mengurutkan file tidak ada hubungannya dengan pembuatan teh." },
+                { text: "D. Menghapus semua bahan", isCorrect: false, rationale: "Menghapus bahan akan menggagalkan proses." }
+            ]
+        },
+        {
+            question: "Manakah contoh abstraksi saat merancang aplikasi peta perjalanan?",
+            options: [
+                { text: "A. Menampilkan warna baju semua orang", isCorrect: false, rationale: "Warna baju pengguna jalan tidak relevan untuk navigasi." },
+                { text: "B. Menampilkan jalan dan lokasi penting", isCorrect: true, rationale: "Hanya menyajikan fitur jalan dan lokasi utama merupakan penerapan abstraksi yang tepat." },
+                { text: "C. Mencatat merek sepatu pengguna", isCorrect: false, rationale: "Merek sepatu adalah detail yang tidak relevan." },
+                { text: "D. Mencantumkan semua suara di jalan", isCorrect: false, rationale: "Suara jalanan merupakan informasi yang mengganggu dan tidak berguna untuk aplikasi peta." }
+            ]
+        },
+        {
+            question: "Masalah besar lebih mudah diselesaikan setelah dibagi menjadi beberapa bagian kecil. Keuntungan utama cara ini adalah ...",
+            options: [
+                { text: "A. Komputer tidak perlu program", isCorrect: false, rationale: "Komputer tetap memerlukan instruksi/program." },
+                { text: "B. Semua proses otomatis", isCorrect: false, rationale: "Dekomposisi tidak serta merta membuat otomatisasi." },
+                { text: "C. Data pasti hilang", isCorrect: false, rationale: "Dekomposisi tidak menghilangkan data." },
+                { text: "D. Masalah menjadi lebih terkelola", isCorrect: true, rationale: "Memecah masalah membuat tiap bagian lebih fokus dan mudah diselesaikan secara terstruktur." }
+            ]
+        },
+        {
+            question: "Sebuah algoritma memiliki langkah yang tidak jelas dan dapat ditafsitkan berbeda. Kualitas algoritma yang belum terpenuhi adalah ...",
+            options: [
+                { text: "A. Kecepatan jaringan", isCorrect: false, rationale: "Kecepatan jaringan tidak mempengaruhi kejelasan logika." },
+                { text: "B. Resolusi layar", isCorrect: false, rationale: "Resolusi layar adalah tampilan visual." },
+                { text: "C. Kapasitas memori", isCorrect: false, rationale: "Kapasitas memori terkait ruang penyimpanan." },
+                { text: "D. Ketidakjelasan instruksi", isCorrect: true, rationale: "Algoritma harus bersifat unambigu (tidak bermakna ganda) dan jelas setiap langkahnya." }
+            ]
+        },
+        {
+            question: "Dalam berpikir komputasional, langkah penyelesaian yang dapat diikuti secara sistematis disebut ...",
+            options: [
+                { text: "A. Algoritma", isCorrect: true, rationale: "Algoritma adalah deretan langkah sistematis penyelesaian masalah." },
+                { text: "B. LAN", isCorrect: false, rationale: "LAN adalah jenis jaringan komputer lokal." },
+                { text: "C. Monitor", isCorrect: false, rationale: "Monitor adalah perangkat output visual." },
+                { text: "D. Spreadsheet", isCorrect: false, rationale: "Spreadsheet adalah aplikasi pengolah angka." }
+            ]
+        },
+        {
+            question: "Daftar angka [8, 3, 6, 2] dicari dengan linear search untuk menemukan angka 6. Berapa elemen yang diperiksa sampai angka ditemukan?",
+            options: [
+                { text: "A. 1", isCorrect: false, rationale: "Elemen ke-1 adalah 8." },
+                { text: "B. 4", isCorrect: false, rationale: "Elemen ke-4 adalah 2." },
+                { text: "C. 2", isCorrect: false, rationale: "Elemen ke-2 adalah 3." },
+                { text: "D. 3", isCorrect: true, rationale: "Pemeriksaan berurutan: 8 (1), 3 (2), lalu 6 (3). Maka butuh 3 pemeriksaan." }
+            ]
+        },
+        {
+            question: "Linear search paling tepat digunakan ketika ...",
+            options: [
+                { text: "A. Semua data berbentuk gambar", isCorrect: false, rationale: "Format data bukan alasan utama memilih algoritma pencarian." },
+                { text: "B. Tidak ada target pencarian", isCorrect: false, rationale: "Pencarian memerlukan target." },
+                { text: "C. Memeriksa elemen satu per satu", isCorrect: true, rationale: "Linear search bekerja dengan memindai elemen satu per satu dari awal sampai akhir." },
+                { text: "D. Data harus selalu terurut", isCorrect: false, rationale: "Linear search tidak mewajibkan data terurut." }
+            ]
+        },
+        {
+            question: "Pada daftar [12, 7, 9, 4], pencarian linear untuk angka 4 membutuhkan pemeriksaan sebanyak ...",
+            options: [
+                { text: "A. 1 elemen", isCorrect: false, rationale: "12 adalah elemen pertama." },
+                { text: "B. 4 elemen", isCorrect: true, rationale: "Angka 4 berada di urutan ke-4, sehingga memeriksa 12, 7, 9, dan 4 (total 4 elemen)." },
+                { text: "C. 2 elemen", isCorrect: false, rationale: "7 adalah elemen kedua." },
+                { text: "D. 3 elemen", isCorrect: false, rationale: "9 adalah elemen ketiga." }
+            ]
+        },
+        {
+            question: "Jika target berada pada posisi pertama suatu daftar, linear search memerlukan ...",
+            options: [
+                { text: "A. Satu pemeriksaan", isCorrect: true, rationale: "Target langsung ditemukan pada perbandingan pertama (best case)." },
+                { text: "B. Pengurutan terlebih dahulu", isCorrect: false, rationale: "Linear search tidak butuh pengurutan." },
+                { text: "C. Dua pemeriksaan", isCorrect: false, rationale: "Dua pemeriksaan untuk posisi kedua." },
+                { text: "D. N pemeriksaan selalu", isCorrect: false, rationale: "N pemeriksaan terjadi pada worst case." }
+            ]
+        },
+        {
+            question: "Daftar berisi 10 elemen. Dalam kondisi terburuk, linear search memeriksa ...",
+            options: [
+                { text: "A. 5 elemen", isCorrect: false, rationale: "5 elemen merupakan rata-rata pencarian." },
+                { text: "B. 10 elemen", isCorrect: true, rationale: "Kondisi terburuk (worst case) terjadi jika target di posisi terakhir atau tidak ada, yakni sebanyak N (10) elemen." },
+                { text: "C. 1 elemen", isCorrect: false, rationale: "1 elemen adalah kondisi terbaik." },
+                { text: "D. 9 elemen", isCorrect: false, rationale: "9 elemen adalah posisi sebelum terakhir." }
+            ]
+        },
+        {
+            question: "Apa yang dilakukan linear search jika target tidak ditemukan dalam daftar?",
+            options: [
+                { text: "A. Berhenti setelah semua elemen diperiksa", isCorrect: true, rationale: "Pencarian berakhir setelah memindai seluruh isi daftar tanpa hasil." },
+                { text: "B. Mengurutkan daftar otomatis", isCorrect: false, rationale: "Pencarian tidak mengurutkan data." },
+                { text: "C. Selalu mengembalikan elemen pertama", isCorrect: false, rationale: "Elemen pertama bukan penanda gagal." },
+                { text: "D. Mengubah semua data", isCorrect: false, rationale: "Linear search tidak memodifikasi data." }
+            ]
+        },
+        {
+            question: "Pada daftar [5, 1, 8, 3], pencarian angka 8 memeriksa urutan ...",
+            options: [
+                { text: "A. 8 saja tanpa pemeriksaan", isCorrect: false, rationale: "Linear search harus memeriksa dari awal." },
+                { text: "B. 5 lalu 1 lalu 8", isCorrect: true, rationale: "Pemeriksaan berurutan dimulait dari indeks 0: angka 5, 1, lalu 8." },
+                { text: "C. 1 lalu 5 lalu 8", isCorrect: false, rationale: "Urutan data asli tidak diawali dengan 1." },
+                { text: "D. 3 lalu 8", isCorrect: false, rationale: "3 ada di urutan terakhir, bukan awal." }
+            ]
+        },
+        {
+            question: "Salah satu kelebihan linear search adalah ...",
+            options: [
+                { text: "A. Mudah diterapkan pada data yang belum terurut", isCorrect: true, rationale: "Linear search sederhana dan fleksibel karena dapat langsung digunakan pada data acak/acak-acakan." },
+                { text: "B. Selalu lebih cepat daripada semua metode", isCorrect: false, rationale: "Binary search lebih cepat untuk data terurut." },
+                { text: "C. Memerlukan data terurut", isCorrect: false, rationale: "Linear search tidak mewajibkan data terurut." },
+                { text: "D. Hanya bekerja pada angka", isCorrect: false, rationale: "Dapat bekerja pada teks/string." }
+            ]
+        },
+        {
+            question: "Apa yang dimaksud satu pass pada Bubble Sort?",
+            options: [
+                { text: "A. Menyimpan file", isCorrect: false, rationale: "Penyimpanan file adalah operasi I/O." },
+                { text: "B. Menghapus satu baris", isCorrect: false, rationale: "Bukan operasi pengurutan." },
+                { text: "C. Satu putaran membandingkan pasangan elemen berdekatan", isCorrect: true, rationale: "Satu pass adalah proses menyisir seluruh daftar dari awal ke akhir sambil membandingkan pasangan berdekatan." },
+                { text: "D. Mencari satu nilai saja", isCorrect: false, rationale: "Itu adalah pencarian (searching)." }
+            ]
+        },
+        {
+            question: "Bubble Sort mengurutkan data menaik dengan cara menukar pasangan ketika ...",
+            options: [
+                { text: "A. Elemen kiri lebih besar dari elemen kanan", isCorrect: true, rationale: "Untuk urutan menaik (ascending), jika kiri > kanan, maka harus ditukar agar yang lebih besar bergeser ke kanan." },
+                { text: "B. Elemen kiri lebih kecil dari elemen kanan", isCorrect: false, rationale: "Jika kiri < kanan, posisi sudah benar." },
+                { text: "C. Kedua elemen sama", isCorrect: false, rationale: "Jika sama, tidak perlu ditukar." },
+                { text: "D. Daftar sudah kosong", isCorrect: false, rationale: "Daftar kosong tidak diproses." }
+            ]
+        },
+        {
+            question: "Dalam Bubble Sort, data [4, 2] setelah satu perbandingan dan pertukaran menjadi ...",
+            options: [
+                { text: "A. [2, 2]", isCorrect: false, rationale: "Nilai tidak boleh terduplikasi." },
+                { text: "B. [2, 4]", isCorrect: true, rationale: "Karena 4 > 2, kedua elemen ditukar posisinya menjadi [2, 4]." },
+                { text: "C. [4, 4]", isCorrect: false, rationale: "Nilai 2 hilang." },
+                { text: "D. [4, 2]", isCorrect: false, rationale: "Ini kondisi sebelum ditukar." }
+            ]
+        },
+        {
+            question: "Pada Bubble Sort menaik, elemen terbesar cenderung berpindah ke ... setelah satu pass penuh",
+            options: [
+                { text: "A. Luar daftar", isCorrect: false, rationale: "Data tetap di dalam array/daftar." },
+                { text: "B. Tengah daftar", isCorrect: false, rationale: "Elemen terbesar akan terus terdorong ke ujung." },
+                { text: "C. Bagian paling kiri", isCorrect: false, rationale: "Paling kiri adalah untuk elemen terkecil." },
+                { text: "D. Bagian paling kanan", isCorrect: true, rationale: "Elemen terbesar akan 'mengapung' sampai ke posisi paling kanan pada pass pertama." }
+            ]
+        },
+        {
+            question: "Untuk mengurutkan 6 elemen dengan Bubble Sort, jumlah pass maksimum pada versi dasar adalah ...",
+            options: [
+                { text: "A. 6", isCorrect: false, rationale: "N pass tidak diperlukan, cukup N-1." },
+                { text: "B. 4", isCorrect: false, rationale: "Kurang dari batas maksimal standar." },
+                { text: "C. 5", isCorrect: true, rationale: "Jumlah pass maksimal untuk N elemen adalah N - 1, jadi untuk 6 elemen butuh 5 pass." },
+                { text: "D. 7", isCorrect: false, rationale: "Melebihi batas elemen." }
+            ]
+        },
+        {
+            question: "Mengapa Bubble Sort membandingkan elemen yang berdekatan?",
+            options: [
+                { text: "A. Agar ukuran file mengecil", isCorrect: false, rationale: "Pengurutan tidak mengubah ukuran data." },
+                { text: "B. Agar data dihapus", isCorrect: false, rationale: "Data tidak boleh hilang saat diurutkan." },
+                { text: "C. Agar jaringan tersambung", isCorrect: false, rationale: "Tidak ada hubungan dengan jaringan." },
+                { text: "D. Agar pasangan yang salah urut dapat ditukar", isCorrect: true, rationale: "Perbandingan bertahap memungkinkan pertukaran pasangan yang salah urut." }
+            ]
+        },
+        {
+            question: "Daftar [3, 1, 2] setelah pass pertama Bubble Sort menaik menjadi ...",
+            options: [
+                { text: "A. [3, 1, 2]", isCorrect: false, rationale: "Belum dilakukan pertukaran." },
+                { text: "B. [1, 2, 3]", isCorrect: false, rationale: "Ini hasil akhir setelah 2 pass." },
+                { text: "C. [2, 1, 3]", isCorrect: false, rationale: "Urutan awal tidak sesuai." },
+                { text: "D. [1, 3, 2]", isCorrect: true, rationale: "Bandingkan (3,1)->tukar [1,3,2], lalu bandingkan (3,2)->tukar [1,2,3]... Hasil pass 1 penuh membawa 3 ke kanan." }
+            ]
+        },
+        {
+            question: "Jika daftar sudah terurut, beberapa implementasi Bubble Sort dapat berhenti lebih awal dengan bantuan ...",
+            options: [
+                { text: "A. Penambahan data acak", isCorrect: false, rationale: "Malah akan merusak urutan." },
+                { text: "B. Penghapusan variabel", isCorrect: false, rationale: "Variabel kontrol tetap dibutuhkan." },
+                { text: "C. Penanda bahwa tidak ada pertukaran", isCorrect: true, rationale: "Flag (penanda) 'swapped = false' menunjukkan data sudah terurut sepenuhnya." },
+                { text: "D. Penggantian sistem operasi", isCorrect: false, rationale: "Sistem operasi tidak relevan dengan logika algoritma." }
+            ]
+        },
+        {
+            question: "Manakah urutan hasil pengurutan menaik yang benar dari [7, 2, 5, 1]?",
+            options: [
+                { text: "A. [1, 2, 5, 7]", isCorrect: true, rationale: "Urutan menaik (ascending) disusun dari yang terkecil (1) ke terbesar (7)." },
+                { text: "B. [1, 5, 2, 7]", isCorrect: false, rationale: "5 lebih besar dari 2, posisi salah." },
+                { text: "C. [2, 1, 5, 7]", isCorrect: false, rationale: "2 lebih besar dari 1, posisi salah." },
+                { text: "D. [7, 5, 2, 1]", isCorrect: false, rationale: "Ini urutan menurun (descending)." }
+            ]
+        },
+        {
+            question: "Perangkat lunak yang mengatur sumber daya komputer dan menjadi perantara pengguna dengan perangkat keras adalah ...",
+            options: [
+                { text: "A. Browser saja", isCorrect: false, rationale: "Browser adalah aplikasi peramban web." },
+                { text: "B. Aplikasi presentasi", isCorrect: false, rationale: "Aplikasi presentasi untuk membuat slide." },
+                { text: "C. Sistem operasi", isCorrect: true, rationale: "Sistem operasi (OS) mengelola hardware dan menyediakan platform untuk software aplikasi." },
+                { text: "D. Pengolah kata", isCorrect: false, rationale: "Pengolah kata untuk dokumen teks." }
+            ]
+        },
+        {
+            question: "Manakah yang termasuk sistem operasi?",
+            options: [
+                { text: "A. Microsoft Excel", isCorrect: false, rationale: "Aplikasi spreadsheet." },
+                { text: "B. PowerPoint", isCorrect: false, rationale: "Aplikasi presentasi." },
+                { text: "C. Adobe Photoshop", isCorrect: false, rationale: "Aplikasi pengolah gambar." },
+                { text: "D. Linux", isCorrect: true, rationale: "Linux adalah salah satu sistem operasi open-source." }
+            ]
+        },
+        {
+            question: "Microsoft Excel tergolong ...",
+            options: [
+                { text: "A. Sistem operasi", isCorrect: false, rationale: "Sistem operasi contohnya Windows/Linux." },
+                { text: "B. Perangkat input", isCorrect: false, rationale: "Input adalah hardware seperti keyboard." },
+                { text: "C. Perangkat jaringan", isCorrect: false, rationale: "Perangkat jaringan contohnya Router." },
+                { text: "D. Aplikasi pengolah angka", isCorrect: true, rationale: "Excel dirancang khusus untuk mengolah data berupa angka dan tabel." }
+            ]
+        },
+        {
+            question: "Fungsi sistem operasi dalam mengelola memori adalah ...",
+            options: [
+                { text: "A. Mencetak dokumen saja", isCorrect: false, rationale: "Fungsi driver printer." },
+                { text: "B. Mengubah suara menjadi teks selalu", isCorrect: false, rationale: "Fungsi fitur speech-to-text." },
+                { text: "C. Mengganti fungsi keyboard", isCorrect: false, rationale: "Konfigurasi skema input." },
+                { text: "D. Mengatur penggunaan memori oleh program", isCorrect: true, rationale: "OS mengalokasikan dan membebaskan memori RAM untuk setiap program yang berjalan." }
+            ]
+        },
+        {
+            question: "Contoh sistem operasi untuk telepon pintar adalah ...",
+            options: [
+                { text: "A. Excel", isCorrect: false, rationale: "Aplikasi spreadsheet." },
+                { text: "B. Android", isCorrect: true, rationale: "Android adalah sistem operasi populer untuk smartphone." },
+                { text: "C. Access", isCorrect: false, rationale: "Aplikasi database." },
+                { text: "D. Word", isCorrect: false, rationale: "Aplikasi pengolah kata." }
+            ]
+        },
+        {
+            question: "Perangkat lunak aplikasi dibuat terutama untuk ...",
+            options: [
+                { text: "A. Menggantikan seluruh perangkat keras", isCorrect: false, rationale: "Software butuh hardware untuk berjalan." },
+                { text: "B. Menyimpan data tanpa media", isCorrect: false, rationale: "Penyimpanan tetap butuh media fisik." },
+                { text: "C. Menyuplai listrik komputer", isCorrect: false, rationale: "Tugas Power Supply." },
+                { text: "D. Membantu pengguna melakukan tugas tertentu", isCorrect: true, rationale: "Aplikasi dirancang spesifik untuk kebutuhan user (misal: mengetik, mengedit foto)." }
+            ]
+        },
+        {
+            question: "Perangkat keras adalah ...",
+            options: [
+                { text: "A. Kumpulan data internet", isCorrect: false, rationale: "Itu adalah data digital." },
+                { text: "B. Pengguna komputer", isCorrect: false, rationale: "Pengguna disebut brainware." },
+                { text: "C. Komponen fisik komputer yang dapat disentuh", isCorrect: true, rationale: "Hardware merupakan seluruh komponen fisik sistem komputer." },
+                { text: "D. Instruksi dalam program", isCorrect: false, rationale: "Itu adalah software." }
+            ]
+        },
+        {
+            question: "Komponen yang menjalankan instruksi dan memproses data adalah ...",
+            options: [
+                { text: "A. Speaker", isCorrect: false, rationale: "Speaker keluaran suara." },
+                { text: "B. Monitor", isCorrect: false, rationale: "Monitor keluaran gambar." },
+                { text: "C. Keyboard", isCorrect: false, rationale: "Keyboard masukan teks." },
+                { text: "D. CPU", isCorrect: true, rationale: "CPU (Central Processing Unit) adalah otak komputer yang memproses semua instruksi." }
+            ]
+        },
+        {
+            question: "Perangkat yang menampilkan hasil pemrosesan secara visual adalah ...",
+            options: [
+                { text: "A. Mouse", isCorrect: false, rationale: "Mouse adalah perangkat penunjuk (input)." },
+                { text: "B. Monitor", isCorrect: true, rationale: "Monitor menyajikan hasil olahan komputer dalam bentuk tampilan visual." },
+                { text: "C. Mikrofon", isCorrect: false, rationale: "Mikrofon adalah input suara." },
+                { text: "D. Scanner", isCorrect: false, rationale: "Scanner adalah input gambar/dokumen." }
+            ]
+        },
+        {
+            question: "Perangkat untuk memasukkan teks ke komputer adalah ...",
+            options: [
+                { text: "A. Keyboard", isCorrect: true, rationale: "Keyboard berisi tombol karakter untuk memasukkan teks dan perintah." },
+                { text: "B. Proyektor", isCorrect: false, rationale: "Proyektor adalah output visual." },
+                { text: "C. Printer", isCorrect: false, rationale: "Printer adalah output cetak." },
+                { text: "D. Speaker", isCorrect: false, rationale: "Speaker adalah output suara." }
+            ]
+        },
+        {
+            question: "Alat untuk memindai dokumen kertas menjadi data digital adalah ...",
+            options: [
+                { text: "A. CPU", isCorrect: false, rationale: "CPU adalah pemroses." },
+                { text: "B. Speaker", isCorrect: false, rationale: "Speaker output suara." },
+                { text: "C. Scanner", isCorrect: true, rationale: "Scanner mengonversi fisik kertas menjadi berkas gambar/digital." },
+                { text: "D. Router", isCorrect: false, rationale: "Router untuk jaringan." }
+            ]
+        },
+        {
+            question: "Perangkat yang menghasilkan keluaran berupa cetakan di kertas adalah ...",
+            options: [
+                { text: "A. Printer", isCorrect: true, rationale: "Printer mencetak teks atau gambar dari komputer ke media kertas." },
+                { text: "B. RAM", isCorrect: false, rationale: "RAM adalah memori sementara." },
+                { text: "C. Mouse", isCorrect: false, rationale: "Mouse adalah input." },
+                { text: "D. Mikrofon", isCorrect: false, rationale: "Mikrofon adalah input." }
+            ]
+        },
+        {
+            question: "Manakah yang merupakan media penyimpanan portabel?",
+            options: [
+                { text: "A. Monitor", isCorrect: false, rationale: "Monitor adalah layar tampilan." },
+                { text: "B. Flashdisk", isCorrect: true, rationale: "Flashdisk (USB Drive) mudah dibawa dan dipindahkan antar komputer." },
+                { text: "C. Prosesor", isCorrect: false, rationale: "Prosesor adalah unit pemroses." },
+                { text: "D. Keyboard", isCorrect: false, rationale: "Keyboard adalah alat ketik." }
+            ]
+        },
+        {
+            question: "RAM umumnya digunakan untuk ...",
+            options: [
+                { text: "A. Menghubungkan jaringan antarkota", isCorrect: false, rationale: "Tugas infrastruktur WAN." },
+                { text: "B. Menyimpan data secara permanen tanpa listrik", isCorrect: false, rationale: "Fungsi Harddisk/SSD." },
+                { text: "C. Menampilkan gambar", isCorrect: false, rationale: "Fungsi GPU/VGA." },
+                { text: "D. Menyimpan sementara data dan program yang sedang digunakan", isCorrect: true, rationale: "RAM menyediakan ruang akses cepat sementara saat aplikasi aktif berjalan." }
+            ]
+        },
+        {
+            question: "Data di RAM pada umumnya akan hilang ketika ...",
+            options: [
+                { text: "A. Monitor dibersihkan", isCorrect: false, rationale: "Pembersihan fisik tidak mempengaruhi data." },
+                { text: "B. Mouse dipindahkan", isCorrect: false, rationale: "Gerakan mouse adalah instruksi input biasa." },
+                { text: "C. Daya listrik dimatikan", isCorrect: true, rationale: "RAM bersifat volatile, butuh arus listrik untuk menjaga data di dalamnya." },
+                { text: "D. File diberi nama", isCorrect: false, rationale: "Memberi nama file adalah modifikasi sistem berkas." }
+            ]
+        },
+        {
+            question: "Brainware dalam sistem komputer berarti ...",
+            options: [
+                { text: "A. Manusia yang menggunakan atau mengelola komputer", isCorrect: true, rationale: "Brainware merujuk pada elemen manusia (pengguna, administrator, programmer)." },
+                { text: "B. Sistem operasi", isCorrect: false, rationale: "Itu adalah software." },
+                { text: "C. Media penyimpanan", isCorrect: false, rationale: "Itu adalah hardware." },
+                { text: "D. Kabel jaringan", isCorrect: false, rationale: "Itu adalah hardware." }
+            ]
+        },
+        {
+            question: "Urutan kerja dasar sistem komputer yang tepat adalah ...",
+            options: [
+                { text: "A. Output, input, process", isCorrect: false, rationale: "Urutan terbalik." },
+                { text: "B. Input, output, hapus", isCorrect: false, rationale: "Siklus standar tidak menghapus." },
+                { text: "C. Process, output, input", isCorrect: false, rationale: "Proses butuh input terlebih dahulu." },
+                { text: "D. Input, process, output", isCorrect: true, rationale: "Data dimasukkan (Input), diolah (Process), lalu dikeluarkan (Output)." }
+            ]
+        },
+        {
+            question: "Contoh perangkat input adalah ...",
+            options: [
+                { text: "A. Speaker", isCorrect: false, rationale: "Output suara." },
+                { text: "B. Monitor", isCorrect: false, rationale: "Output visual." },
+                { text: "C. Printer", isCorrect: false, rationale: "Output cetak." },
+                { text: "D. Mikrofon", isCorrect: true, rationale: "Mikrofon memasukkan gelombang suara ke komputer." }
+            ]
+        },
+        {
+            question: "Contoh perangkat output adalah ...",
+            options: [
+                { text: "A. Mouse", isCorrect: false, rationale: "Input navigasi." },
+                { text: "B. Scanner", isCorrect: false, rationale: "Input dokumen." },
+                { text: "C. Keyboard", isCorrect: false, rationale: "Input teks." },
+                { text: "D. Proyektor", isCorrect: true, rationale: "Proyektor memancarkan tampilan gambar/visual keluar." }
+            ]
+        },
+        {
+            question: "Perangkat yang menghubungkan beberapa jaringan dan meneruskan paket data antar jaringan adalah ...",
+            options: [
+                { text: "A. Keyboard", isCorrect: false, rationale: "Input teks." },
+                { text: "B. RAM", isCorrect: false, rationale: "Memori utama." },
+                { text: "C. Router", isCorrect: true, rationale: "Router bertugas merutekan paket data antar-jaringan berbeda." },
+                { text: "D. Printer", isCorrect: false, rationale: "Pencetak." }
+            ]
+        },
+        {
+            question: "Perangkat lunak berbahaya yang menggandakan diri dan menyebar melalui jaringan tanpa perlu menempel pada program lain disebut ...",
+            options: [
+                { text: "A. Firewall", isCorrect: false, rationale: "Firewall adalah sistem pengaman." },
+                { text: "B. Driver", isCorrect: false, rationale: "Driver pengendali perangkat." },
+                { text: "C. Spreadsheet", isCorrect: false, rationale: "Software pengolah data." },
+                { text: "D. Worm", isCorrect: true, rationale: "Worm dapat bereplikasi mandiri dan menyebar lewat jaringan tanpa program inang." }
+            ]
+        },
+        {
+            question: "Program jahat yang menyamar sebagai aplikasi sah untuk mengelabui pengguna disebut ...",
+            options: [
+                { text: "A. Worm", isCorrect: false, rationale: "Worm menyebar mandiri." },
+                { text: "B. Compiler", isCorrect: false, rationale: "Compiler menerjemahkan kode program." },
+                { text: "C. Trojan", isCorrect: true, rationale: "Trojan Kuda Trojan menyamar sebagai software asli yang aman." },
+                { text: "D. Browser", isCorrect: false, rationale: "Browser penjelajah web." }
+            ]
+        },
+        {
+            question: "Perangkat lunak yang dapat mengunci atau mengenkripsi file korban lalu meminta tebusan disebut ...",
+            options: [
+                { text: "A. Word processor", isCorrect: false, rationale: "Pengolah kata." },
+                { text: "B. Ransomware", isCorrect: true, rationale: "Ransomware meminta uang tebusan (ransom) untuk membuka sandi berkas." },
+                { text: "C. Utility", isCorrect: false, rationale: "Program pemeliharaan sistem." },
+                { text: "D. Firmware", isCorrect: false, rationale: "Software tertanam pada chip." }
+            ]
+        },
+        {
+            question: "Salah satu tindakan untuk mengurangi risiko malware adalah ...",
+            options: [
+                { text: "A. Memperbarui sistem dan aplikasi", isCorrect: true, rationale: "Pembaruan (patching) menutup celah keamanan yang bisa dieksploitasi malware." },
+                { text: "B. Membuka semua lampiran asing", isCorrect: false, rationale: "Sangat berbahaya pemicu virus." },
+                { text: "C. Menggunakan kata sandi yang sama di semua akun", isCorrect: false, rationale: "Risiko peretasan massal." },
+                { text: "D. Mematikan perlindungan keamanan", isCorrect: false, rationale: "Membuat sistem tanpa pertahanan." }
+            ]
+        },
+        {
+            question: "Mengapa lampiran email dari pengirim tidak dikenal perlu diwaspadai?",
+            options: [
+                { text: "A. Dapat berisi file atau tautan berbahaya", isCorrect: true, rationale: "Sering menjadi vektor penyebaran phishing dan malware." },
+                { text: "B. Pasti berasal dari guru", isCorrect: false, rationale: "Pengirim tidak dikenal bukan guru." },
+                { text: "C. Selalu mempercepat komputer", isCorrect: false, rationale: "Email tidak mempercepat komputer." },
+                { text: "D. Tidak mungkin mengandung malware", isCorrect: false, rationale: "Sangat berpotensi virus." }
+            ]
+        },
+        {
+            question: "Perangkat lunak yang membantu memantau dan memblokir lalu lintas jaringan berbahaya disebut ...",
+            options: [
+                { text: "A. Firewall", isCorrect: true, rationale: "Firewall menyaring data masuk/keluar berdasarkan aturan keamanan." },
+                { text: "B. Pemutar musik", isCorrect: false, rationale: "Aplikasi media." },
+                { text: "C. Spreadsheet", isCorrect: false, rationale: "Aplikasi angka." },
+                { text: "D. Editor gambar", isCorrect: false, rationale: "Aplikasi grafis." }
+            ]
+        },
+        {
+            question: "Kata sandi yang lebih aman sebaiknya ...",
+            options: [
+                { text: "A. Sama untuk semua akun", isCorrect: false, rationale: "Mudah dibobol secara simultan." },
+                { text: "B. Panjang dan sulit ditebak", isCorrect: true, rationale: "Menggabungkan huruf, angka, simbol, dan panjang memadai memperkuat enkripsi." },
+                { text: "C. Berisi tanggal lahir saja", isCorrect: false, rationale: "Sangat mudah ditebak lewat rekayasa sosial." },
+                { text: "D. Dibagikan kepada teman", isCorrect: false, rationale: "Merusak prinsip kerahasiaan." }
+            ]
+        },
+        {
+            question: "Tindakan yang tepat ketika menerima tautan mencurigakan adalah ...",
+            options: [
+                { text: "A. Memeriksa sumbernya sebelum membuka", isCorrect: true, rationale: "Selalu verifikasi domain dan identitas pengirim terlebih dahulu." },
+                { text: "B. Langsung memasukkan kata sandi", isCorrect: false, rationale: "Bisa terjebak situs phishing." },
+                { text: "C. Mengunduh semua file", isCorrect: false, rationale: "Berisiko terinfeksi malware." },
+                { text: "D. Meneruskannya ke semua kontak", isCorrect: false, rationale: "Menyebarkan ancaman ke orang lain." }
+            ]
+        },
+        {
+            question: "Pencadangan data secara berkala berguna untuk ...",
+            options: [
+                { text: "A. Mengganti sistem operasi otomatis", isCorrect: false, rationale: "Bukan fungsi backup." },
+                { text: "B. Menambah kecepatan mengetik", isCorrect: false, rationale: "Bukan fungsi backup." },
+                { text: "C. Membuat layar lebih terang", isCorrect: false, rationale: "Pengaturan monitor." },
+                { text: "D. Memulihkan data ketika hilang atau rusak", isCorrect: true, rationale: "Backup memastikan adanya salinan untuk pemulihan (disaster recovery)." }
+            ]
+        },
+        {
+            question: "Jaringan komputer dalam area rumah, sekolah, atau kantor biasanya disebut ...",
+            options: [
+                { text: "A. MAN", isCorrect: false, rationale: "MAN mencakup skala kota." },
+                { text: "B. WAN", isCorrect: false, rationale: "WAN mencakup negara/benua." },
+                { text: "C. PAN selalu", isCorrect: false, rationale: "PAN hanya untuk area pribadi (Bluetooth)." },
+                { text: "D. LAN", isCorrect: true, rationale: "LAN (Local Area Network) menghubungkan area terbatas seperti gedung/sekolah." }
+            ]
+        },
+        {
+            question: "Jaringan yang mencakup wilayah geografis sangat luas antarkota atau negara disebut ...",
+            options: [
+                { text: "A. WAN", isCorrect: true, rationale: "WAN (Wide Area Network) menghubungkan area geografis lintas kota/negara." },
+                { text: "B. CPU", isCorrect: false, rationale: "Komponen komputer." },
+                { text: "C. LAN", isCorrect: false, rationale: "Jaringan lokal." },
+                { text: "D. USB", isCorrect: false, rationale: "Konektor kabel." }
+            ]
+        },
+        {
+            question: "Internet adalah ...",
+            options: [
+                { text: "A. Jaringan global yang menghubungkan banyak jaringan komputer", isCorrect: true, rationale: "Internet (Interconnected Network) adalah jaringan komputer global terhubung." },
+                { text: "B. Jenis memori", isCorrect: false, rationale: "Bukan perangkat memori." },
+                { text: "C. Satu komputer tanpa koneksi", isCorrect: false, rationale: "Komputer terisolasi." },
+                { text: "D. Program pengolah angka", isCorrect: false, rationale: "Aplikasi spreadsheet." }
+            ]
+        },
+        {
+            question: "Perangkat yang memungkinkan komputer terhubung ke jaringan nirkabel adalah ...",
+            options: [
+                { text: "A. Adaptor Wi-Fi", isCorrect: true, rationale: "Wi-Fi Card/Adapter menangkap sinyal radio nirkabel." },
+                { text: "B. Printer tinta", isCorrect: false, rationale: "Pencetak dokumen." },
+                { text: "C. Speaker", isCorrect: false, rationale: "Output suara." },
+                { text: "D. Prosesor grafis saja", isCorrect: false, rationale: "GPU untuk visual." }
+            ]
+        },
+        {
+            question: "Jaringan lokal sekolah dapat digunakan untuk ...",
+            options: [
+                { text: "A. Menghilangkan kebutuhan keamanan", isCorrect: false, rationale: "Keamanan tetap diperlukan." },
+                { text: "B. Menjamin semua situs aman", isCorrect: false, rationale: "Perlu alat keamanan khusus." },
+                { text: "C. Berbagi file dan printer antarperangkat", isCorrect: true, rationale: "Manfaat LAN adalah resource sharing (printer, file bersama)." },
+                { text: "D. Mengubah monitor menjadi CPU", isCorrect: false, rationale: "Tidak mungkin mengubah hardware." }
+            ]
+        },
+        {
+            question: "Koneksi seluler pada ponsel umumnya menggunakan ...",
+            options: [
+                { text: "A. Bluetooth saja untuk internet global", isCorrect: false, rationale: "Bluetooth jangkauan sangat pendek." },
+                { text: "B. Jaringan operator seluler", isCorrect: true, rationale: "Menggunakan pemancar BTS operator (4G/5G)." },
+                { text: "C. Port VGA", isCorrect: false, rationale: "Kabel display." },
+                { text: "D. Kabel HDMI", isCorrect: false, rationale: "Kabel media audio-video." }
+            ]
+        },
+        {
+            question: "Perbedaan utama LAN dan internet adalah ...",
+            options: [
+                { text: "A. Keduanya tidak menggunakan protokol", isCorrect: false, rationale: "Semua pakai TCP/IP." },
+                { text: "B. LAN selalu lebih luas daripada internet", isCorrect: false, rationale: "Terbalik." },
+                { text: "C. Internet hanya menghubungkan satu perangkat", isCorrect: false, rationale: "Internet menghubungkan jutaan." },
+                { text: "D. LAN mencakup area lokal, sedangkan internet menghubungkan jaringan secara global", isCorrect: true, rationale: "Sesuai cakupan geografisnya (Lokal vs Global)." }
+            ]
+        },
+        {
+            question: "Alamat IP berfungsi untuk ...",
+            options: [
+                { text: "A. Menghitung jumlah sel Excel", isCorrect: false, rationale: "Bukan fungsi IP." },
+                { text: "B. Mengidentifikasi perangkat pada jaringan IP", isCorrect: true, rationale: "IP address adalah identitas unik perangkat dalam jaringan komputer." },
+                { text: "C. Mengatur ukuran huruf dokumen", isCorrect: false, rationale: "Bukan fungsi IP." },
+                { text: "D. Menyimpan baterai", isCorrect: false, rationale: "Bukan fungsi IP." }
+            ]
+        },
+        {
+            question: "Ketika Wi-Fi tersambung tetapi internet tidak dapat diakses, langkah awal yang masuk akal adalah ...",
+            options: [
+                { text: "A. Mengganti monitor", isCorrect: false, rationale: "Monitor tidak mempengaruhi jaringan." },
+                { text: "B. Memeriksa koneksi router dan layanan internet", isCorrect: true, rationale: "Mengecek lampu status router dan modem ISP adalah tindakan isolasi masalah standar." },
+                { text: "C. Menghapus semua dokumen", isCorrect: false, rationale: "Tidak ada hubungan dengan koneksi." },
+                { text: "D. Melepas RAM tanpa pemeriksaan", isCorrect: false, rationale: "Tindakan merusak tanpa diagnosa." }
+            ]
+        },
+        {
+            question: "Penggunaan jaringan publik yang aman antara lain dengan ...",
+            options: [
+                { text: "A. Menghindari transaksi sensitif pada jaringan yang tidak tepercaya", isCorrect: true, rationale: "Wi-Fi publik rentan serangan Man-in-the-Middle (Eavesdropping)." },
+                { text: "B. Membagikan kata sandi", isCorrect: false, rationale: "Berbahaya." },
+                { text: "C. Mematikan pembaruan selamanya", isCorrect: false, rationale: "Meningkatkan risiko peretasan." },
+                { text: "D. Mengunduh aplikasi dari sembarang situs", isCorrect: false, rationale: "Berisiko tinggi." }
+            ]
+        },
+        {
+            question: "Dalam spreadsheet, perpotongan baris dan kolom disebut ...",
+            options: [
+                { text: "A. Sel", isCorrect: true, rationale: "Cell (Sel) adalah kotak perpotongan baris dan kolom tempat menginput data." },
+                { text: "B. Ribbon", isCorrect: false, rationale: "Pita menu ikon." },
+                { text: "C. Workbook", isCorrect: false, rationale: "Berkas kerja." },
+                { text: "D. Folder", isCorrect: false, rationale: "Direktori file." }
+            ]
+        },
+        {
+            question: "Alamat sel yang menunjukkan kolom D dan baris 7 adalah ...",
+            options: [
+                { text: "A. D7", isCorrect: true, rationale: "Penulisan sel diawali nama kolom (huruf) lalu nomor baris (angka), yaitu D7." },
+                { text: "B. DD7", isCorrect: false, rationale: "Format salah." },
+                { text: "C. 7D", isCorrect: false, rationale: "Format terbalik." },
+                { text: "D. D-", isCorrect: false, rationale: "Format tidak lengkap." }
+            ]
+        },
+        {
+            question: "Sekumpulan sel dari A1 sampai A5 ditulis sebagai ...",
+            options: [
+                { text: "A. A1/A5", isCorrect: false, rationale: "Tanda miring untuk pembagian." },
+                { text: "B. A1:A5", isCorrect: true, rationale: "Tanda titik dua (:) digunakan untuk menyatakan Range sel." },
+                { text: "C. A1;A5", isCorrect: false, rationale: "Titik koma untuk pemisah argumen." },
+                { text: "D. A1-A5", isCorrect: false, rationale: "Tanda hubung untuk pengurangan." }
+            ]
+        },
+        {
+            question: "Formula Excel untuk menjumlahkan nilai pada B2 sampai B6 adalah ...",
+            options: [
+                { text: "A. =TOTAL(B2;B6)", isCorrect: false, rationale: "Nama fungsi salah." },
+                { text: "B. SUM=B2:B6", isCorrect: false, rationale: "Posisi sama dengan salah." },
+                { text: "C. =ADD(B2-B6)", isCorrect: false, rationale: "Fungsi ADD tidak tepat." },
+                { text: "D. =SUM(B2:B6)", isCorrect: true, rationale: "Syntax resmi Excel untuk penjumlahan kelompok sel adalah =SUM(rentang_sel)." }
+            ]
+        },
+        {
+            question: "Formula untuk menghitung rata-rata nilai pada C1 sampai C4 adalah ...",
+            options: [
+                { text: "A. =SUM(C1:C4)", isCorrect: false, rationale: "SUM untuk penjumlahan." },
+                { text: "B. =AVERAGE(C1:C4)", isCorrect: true, rationale: "AVERAGE digunakan untuk menghitung nilai rata-rata aritmatika." },
+                { text: "C. =COUNT(C1:C4)", isCorrect: false, rationale: "COUNT untuk menghitung banyaknya sel." },
+                { text: "D. =MAX(C1:C4)", isCorrect: false, rationale: "MAX untuk mencari nilai tertinggi." }
+            ]
+        },
+        {
+            question: "Fungsi COUNT pada Excel digunakan untuk ...",
+            options: [
+                { text: "A. Menghitung banyaknya sel berisi angka", isCorrect: true, rationale: "COUNT menghitung jumlah sel dalam rentang yang memuat angka." },
+                { text: "B. Mencari nilai tertinggi", isCorrect: false, rationale: "Itu fungsi MAX." },
+                { text: "C. Memberi bingkai sel", isCorrect: false, rationale: "Itu pengaturan Border." },
+                { text: "D. Menjumlahkan semua angka", isCorrect: false, rationale: "Itu fungsi SUM." }
+            ]
+        },
+        {
+            question: "Fungsi MAX digunakan untuk memperoleh ...",
+            options: [
+                { text: "A. Nilai terbesar", isCorrect: true, rationale: "MAX mengambil angka bernilai paling tinggi dari sekumpulan data." },
+                { text: "B. Jumlah nilai", isCorrect: false, rationale: "Fungsi SUM." },
+                { text: "C. Jumlah sel kosong", isCorrect: false, rationale: "Fungsi COUNTBLANK." },
+                { text: "D. Nilai terkecil", isCorrect: false, rationale: "Fungsi MIN." }
+            ]
+        },
+        {
+            question: "Fungsi MIN digunakan untuk memperoleh ...",
+            options: [
+                { text: "A. Nilai terbesar", isCorrect: false, rationale: "Fungsi MAX." },
+                { text: "B. Nilai terkecil", isCorrect: true, rationale: "MIN mengambil nilai terendah/terkecil." },
+                { text: "C. Rata-rata", isCorrect: false, rationale: "Fungsi AVERAGE." },
+                { text: "D. Teks terpanjang", isCorrect: false, rationale: "Bukan fungsi MIN." }
+            ]
+        },
+        {
+            question: "Jika A1 berisi 12 dan A2 berisi 8, hasil =SUM(A1:A2) adalah ...",
+            options: [
+                { text: "A. 20", isCorrect: true, rationale: "12 + 8 = 20." },
+                { text: "B. 96", isCorrect: false, rationale: "Hasil perkalian (PRODUCT)." },
+                { text: "C. 4", isCorrect: false, rationale: "Hasil pengurangan." },
+                { text: "D. 128", isCorrect: false, rationale: "Hasil kalkulasi lain." }
+            ]
+        },
+        {
+            question: "Jika B1 berisi 5 dan B2 berisi 10, hasil =AVERAGE(B1:B2) adalah ...",
+            options: [
+                { text: "A. 5", isCorrect: false, rationale: "Nilai B1." },
+                { text: "B. 7,5", isCorrect: true, rationale: "(5 + 10) / 2 = 7,5." },
+                { text: "C. 15", isCorrect: false, rationale: "Hasil penjumlahan (SUM)." },
+                { text: "D. 10", isCorrect: false, rationale: "Nilai B2." }
+            ]
+        },
+        {
+            question: "Untuk menampilkan garis bingkai pada sel, pengaturan yang digunakan adalah ...",
+            options: [
+                { text: "A. Border", isCorrect: true, rationale: "Border digunakan untuk memberi atau mengubah garis batas sel." },
+                { text: "B. Number", isCorrect: false, rationale: "Format tipe data angka." },
+                { text: "C. Alignment", isCorrect: false, rationale: "Rataan teks." },
+                { text: "D. Protection saja", isCorrect: false, rationale: "Penguncian sel." }
+            ]
+        },
+        {
+            question: "Fitur untuk menggabungkan beberapa sel menjadi satu area adalah ...",
+            options: [
+                { text: "A. Filter", isCorrect: false, rationale: "Penyaring data." },
+                { text: "B. Merge Cells", isCorrect: true, rationale: "Merge Cells menyatukan dua atau lebih sel bersebelahan menjadi satu." },
+                { text: "C. Sort", isCorrect: false, rationale: "Pengurutan data." },
+                { text: "D. Wrap Text", isCorrect: false, rationale: "Teks melipat." }
+            ]
+        },
+        {
+            question: "Fitur Wrap Text berfungsi untuk ...",
+            options: [
+                { text: "A. Menghapus formula", isCorrect: false, rationale: "Bukan fungsi Wrap Text." },
+                { text: "B. Membuat teks panjang tampil dalam beberapa baris di dalam sel", isCorrect: true, rationale: "Wrap Text menyesuaikan tinggi sel agar teks panjang muat tanpa melebar." },
+                { text: "C. Mengganti nama workbook", isCorrect: false, rationale: "Bukan fungsi Wrap Text." },
+                { text: "D. Mengurutkan angka", isCorrect: false, rationale: "Bukan fungsi Wrap Text." }
+            ]
+        },
+        {
+            question: "Untuk mengurutkan daftar nilai dari kecil ke besar, gunakan ...",
+            options: [
+                { text: "A. Merge Cells", isCorrect: false, rationale: "Penggabungan sel." },
+                { text: "B. Sort Descending", isCorrect: false, rationale: "Pengurutan besar ke kecil." },
+                { text: "C. Sort Ascending", isCorrect: true, rationale: "Sort Ascending menyusun data dari A-Z atau angka terkecil ke terbesar." },
+                { text: "D. Freeze Panes", isCorrect: false, rationale: "Membekukan baris/kolom." }
+            ]
+        },
+        {
+            question: "Fitur Filter membantu pengguna untuk ...",
+            options: [
+                { text: "A. Memindai virus secara langsung", isCorrect: false, rationale: "Tugas antivirus." },
+                { text: "B. Membuat sistem operasi", isCorrect: false, rationale: "Bukan fitur excel." },
+                { text: "C. Menjumlahkan semua angka otomatis", isCorrect: false, rationale: "Fitur AutoSum." },
+                { text: "D. Menampilkan baris yang memenuhi kriteria tertentu", isCorrect: true, rationale: "Filter menyaring tampilan baris data yang diinginkan saja." }
+            ]
+        },
+        {
+            question: "File Excel modern umumnya menggunakan ekstensi ...",
+            options: [
+                { text: "A. .docx", isCorrect: false, rationale: "Ekstensi Microsoft Word." },
+                { text: "B. .xlsx", isCorrect: true, rationale: ".xlsx adalah format standar workbook Microsoft Excel." },
+                { text: "C. .mp3", isCorrect: false, rationale: "Berkas audio." },
+                { text: "D. .pptx", isCorrect: false, rationale: "Ekstensi Microsoft PowerPoint." }
+            ]
+        },
+        {
+            question: "Kumpulan lembar kerja dalam satu file Excel disebut ...",
+            options: [
+                { text: "A. Cell", isCorrect: false, rationale: "Elemen terkecil." },
+                { text: "B. Worksheet saja", isCorrect: false, rationale: "Lembar tunggal." },
+                { text: "C. Range", isCorrect: false, rationale: "Kumpulan sel." },
+                { text: "D. Workbook", isCorrect: true, rationale: "Workbook adalah berkas/file Excel yang dapat memuat banyak Worksheet." }
+            ]
+        },
+        {
+            question: "Lembar kerja di dalam workbook disebut ...",
+            options: [
+                { text: "A. Slide", isCorrect: false, rationale: "Istilah pada PowerPoint." },
+                { text: "B. Router", isCorrect: false, rationale: "Perangkat keras jaringan." },
+                { text: "C. Worksheet", isCorrect: true, rationale: "Worksheet (Sheet) adalah halaman lembar kerja tabel." },
+                { text: "D. Folder", isCorrect: false, rationale: "Direktori file." }
+            ]
+        },
+        {
+            question: "Untuk menyalin grafik Excel ke Word, tindakan yang umum dilakukan adalah ...",
+            options: [
+                { text: "A. Restart komputer", isCorrect: false, rationale: "Tindakan tidak berhubungan." },
+                { text: "B. Format hard disk", isCorrect: false, rationale: "Tindakan merusak data." },
+                { text: "C. Mengubah ekstensi menjadi .exe", isCorrect: false, rationale: "Akan merusak file." },
+                { text: "D. Copy lalu Paste", isCorrect: true, rationale: "Menyalin dari Excel (Ctrl+C) lalu menempel ke Word (Ctrl+V)." }
+            ]
+        },
+        {
+            question: "Perbedaan utama Word dan Excel adalah ...",
+            options: [
+                { text: "A. Word berfokus pada dokumen teks, Excel pada data berbentuk tabel dan perhitungan", isCorrect: true, rationale: "Word adalah Word Processor (teks), Excel adalah Spreadsheet (tabel/angka)." },
+                { text: "B. Word adalah sistem operasi", isCorrect: false, rationale: "Keduanya adalah software aplikasi." },
+                { text: "C. Excel hanya untuk menggambar", isCorrect: false, rationale: "Excel untuk pengolahan angka." },
+                { text: "D. Keduanya merupakan perangkat keras", isCorrect: false, rationale: "Keduanya adalah perangkat lunak." }
+            ]
+        },
+        {
+            question: "Grafik di Excel bermanfaat untuk ...",
+            options: [
+                { text: "A. Mengganti kata sandi komputer", isCorrect: false, rationale: "Fitur keamanan sistem." },
+                { text: "B. Menghubungkan jaringan", isCorrect: false, rationale: "Tugas alat jaringan." },
+                { text: "C. Menyajikan pola atau perbandingan data secara visual", isCorrect: true, rationale: "Grafik memudahkan pembacaan tren dan statistik data secara visual." },
+                { text: "D. Memindai dokumen fisik", isCorrect: false, rationale: "Tugas Scanner." }
+            ]
+        },
+        {
+            question: "Ketika data sumber grafik berubah, grafik Excel yang terhubung dengan data tersebut biasanya ...",
+            options: [
+                { text: "A. Dapat diperbarui mengikuti perubahan data", isCorrect: true, rationale: "Grafik di Excel bersifat dinamis dan otomatis memperbarui tampilannya." },
+                { text: "B. Selalu harus digambar ulang manual", isCorrect: false, rationale: "Excel otomatis mengupdate." },
+                { text: "C. Berubah menjadi sistem operasi", isCorrect: false, rationale: "Pernyataan tidak masuk akal." },
+                { text: "D. Terhapus otomatis", isCorrect: false, rationale: "Grafik tidak terhapus." }
+            ]
+        },
+        {
+            question: "Clipboard berfungsi untuk ...",
+            options: [
+                { text: "A. Menjalankan sistem operasi", isCorrect: false, rationale: "Tugas OS." },
+                { text: "B. Mengatur jaringan internet", isCorrect: false, rationale: "Tugas Network Setting." },
+                { text: "C. Menyimpan sementara data yang disalin atau dipotong", isCorrect: true, rationale: "Clipboard menyimpan data sementara hasil operasi Copy / Cut." },
+                { text: "D. Mengolah suara", isCorrect: false, rationale: "Tugas Sound Card / Audio Editor." }
+            ]
+        },
+        {
+            question: "Manakah pasangan aplikasi dan fungsi yang benar?",
+            options: [
+                { text: "A. PowerPoint untuk mengedit BIOS", isCorrect: false, rationale: "Fungsi salah." },
+                { text: "B. Excel untuk mengelola router", isCorrect: false, rationale: "Fungsi salah." },
+                { text: "C. Word untuk dokumen teks", isCorrect: true, rationale: "Microsoft Word dikhususkan untuk pembuatan dokumen berbasis teks." },
+                { text: "D. Access untuk mencetak tanpa printer", isCorrect: false, rationale: "Mencetak tetap butuh printer." }
+            ]
+        },
+        {
+            question: "Microsoft PowerPoint terutama digunakan untuk ...",
+            options: [
+                { text: "A. Menghapus malware secara otomatis", isCorrect: false, rationale: "Tugas Antivirus." },
+                { text: "B. Membuat presentasi berbasis slide", isCorrect: true, rationale: "PowerPoint digunakan untuk merancang slide presentasi interaktif." },
+                { text: "C. Mengelola perangkat keras", isCorrect: false, rationale: "Tugas OS." },
+                { text: "D. Menyusun routing jaringan", isCorrect: false, rationale: "Tugas Administrator Jaringan." }
+            ]
+        },
+        {
+            question: "Microsoft Access terutama berkaitan dengan ...",
+            options: [
+                { text: "A. Pembuatan kabel jaringan", isCorrect: false, rationale: "Tugas fisik/hardware." },
+                { text: "B. Pengeditan audio", isCorrect: false, rationale: "Software audio editor." },
+                { text: "C. Pengaturan kipas komputer", isCorrect: false, rationale: "Sistem BIOS/Thermal." },
+                { text: "D. Pengelolaan basis data", isCorrect: true, rationale: "Microsoft Access adalah RDBMS (Relational Database Management System)." }
+            ]
+        },
+        {
+            question: "Saat memasukkan formula Excel, tanda yang umumnya diletakkan di awal adalah ...",
+            options: [
+                { text: "A. &", isCorrect: false, rationale: "Penggabung teks." },
+                { text: "B. =", isCorrect: true, rationale: "Setiap rumus/formula Excel WAJIB diawali dengan simbol sama dengan (=)." },
+                { text: "C. #", isCorrect: false, rationale: "Penanda error/jumlah." },
+                { text: "D. @", isCorrect: false, rationale: "Digunakan pada nama fungsi/array tertentu." }
+            ]
+        },
+        {
+            question: "Jika formula =SUM(A1:A3) digunakan, tanda titik dua menunjukkan ...",
+            options: [
+                { text: "A. Pembagian dua angka", isCorrect: false, rationale: "Pembagian pakai garis miring (/)." },
+                { text: "B. Format tanggal", isCorrect: false, rationale: "Tanggal pakai garis miring / strip." },
+                { text: "C. Alamat jaringan", isCorrect: false, rationale: "Titik dua pada IPv6." },
+                { text: "D. Rentang sel berurutan", isCorrect: true, rationale: "Titik dua mewakili kata 'sampai dengan' pada rentang sel." }
+            ]
+        },
+        {
+            question: "Jika sebuah sel menampilkan ####, salah satu penyebab yang umum adalah ...",
+            options: [
+                { text: "A. Sel tidak mempunyai alamat", isCorrect: false, rationale: "Setiap sel pasti bernavigasi." },
+                { text: "B. Komputer tidak memiliki CPU", isCorrect: false, rationale: "Komputer tidak bisa hidup tanpa CPU." },
+                { text: "C. File pasti terkena worm", isCorrect: false, rationale: "Tampilan ini bukan eror virus." },
+                { text: "D. Lebar kolom tidak cukup menampilkan nilai", isCorrect: true, rationale: "#### muncul jika ukuran kolom terlalu sempit untuk menampilkan seluruh angka/tanggal." }
+            ]
+        },
+        {
+            question: "Kesalahan #DIV/0! muncul ketika formula ...",
+            options: [
+                { text: "A. Menjumlahkan angka positif", isCorrect: false, rationale: "Hasil normal." },
+                { text: "B. Menggunakan huruf sebagai judul", isCorrect: false, rationale: "Hasil normal." },
+                { text: "C. Membagi dengan nol atau sel bernilai nol", isCorrect: true, rationale: "#DIV/0! singkatan dari 'Division by Zero' (Pembagian dengan angka 0)." },
+                { text: "D. Memakai border", isCorrect: false, rationale: "Border hanya visual." }
+            ]
+        },
+        {
+            question: "Untuk menjaga file tugas tetap aman, kebiasaan yang baik adalah ...",
+            options: [
+                { text: "A. Menyimpan perubahan dan membuat salinan cadangan", isCorrect: true, rationale: "Rutin menyimpan (Save) dan membackup mencegah kehilangan berkas saat mati listrik/rusak." },
+                { text: "B. Menghapus file setelah mengetik", isCorrect: false, rationale: "Akan menghilangkan berkas." },
+                { text: "C. Mengandalkan satu salinan saja", isCorrect: false, rationale: "Rentang kehilangan tunggal." },
+                { text: "D. Mengirim kata sandi bersama file", isCorrect: false, rationale: "Risiko keamanan." }
+            ]
+        },
+        {
+            question: "Seorang siswa hendak membuat laporan dengan tabel dan grafik. Kombinasi aplikasi yang sesuai adalah ...",
+            options: [
+                { text: "A. Word untuk sistem operasi, Excel untuk jaringan", isCorrect: false, rationale: "Fungsi salah." },
+                { text: "B. Excel untuk mengolah data, Word untuk laporan", isCorrect: true, rationale: "Excel tepat untuk kalkulasi/grafik tabel, lalu hasilnya disematkan pada laporan Word." },
+                { text: "C. Access untuk mengganti keyboard", isCorrect: false, rationale: "Fungsi salah." },
+                { text: "D. PowerPoint untuk menghitung semua data tanpa formula", isCorrect: false, rationale: "PowerPoint tidak dirancang untuk olah rumus rumit." }
+            ]
+        },
+        {
+            question: "Dalam sistem komputer, data mentah yang telah diolah sehingga bermakna disebut ...",
+            options: [
+                { text: "A. Firmware", isCorrect: false, rationale: "Software pengendali hardware dasar." },
+                { text: "B. Informasi", isCorrect: true, rationale: "Informasi adalah hasil dari data mentah yang telah diproses dan memiliki makna bagi pengguna." },
+                { text: "C. Perangkat input", isCorrect: false, rationale: "Pemasuk data." },
+                { text: "D. Malware", isCorrect: false, rationale: "Program jahat." }
+            ]
+        },
+        {
+            question: "Firmware adalah ...",
+            options: [
+                { text: "A. Perangkat untuk mencetak", isCorrect: false, rationale: "Printer." },
+                { text: "B. Dokumen spreadsheet", isCorrect: false, rationale: "Worksheet." },
+                { text: "C. Perangkat lunak tingkat rendah yang tertanam untuk mengendalikan perangkat keras", isCorrect: true, rationale: "Firmware (seperti BIOS/UEFI) ditanam langsung pada chip ROM perangkat untuk mengontrol fungsi mendasar hardware." },
+                { text: "D. Jaringan komputer luas", isCorrect: false, rationale: "WAN/Internet." }
+            ]
+        }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let totalTime = 30 * 60; // 30 Menit dalam detik
+    let timerInterval;
+    let studentName = "";
+
+    const loginBox = document.getElementById('login-box');
+    const quizBox = document.getElementById('quiz-box');
+    const resultBox = document.getElementById('result-box');
+    const inputName = document.getElementById('student-name');
+    const inputToken = document.getElementById('access-token');
+    const loginBtn = document.getElementById('login-btn');
+    const errorMsg = document.getElementById('error-message');
+    
+    const userDisplay = document.getElementById('user-display');
+    const questionElement = document.getElementById('question');
+    const optionsContainer = document.getElementById('options');
+    const progressText = document.getElementById('progress-text');
+    const progressBar = document.getElementById('progress-bar');
+    const rationaleBox = document.getElementById('rationale');
+    const nextButton = document.getElementById('next-btn');
+    const scoreElement = document.getElementById('score');
+    const resultSummary = document.getElementById('result-summary');
+    const scoreDetails = document.getElementById('score-details');
+    const studentResultName = document.getElementById('student-result-name');
+    const timerElement = document.getElementById('timer');
+    const completionMessage = document.getElementById('completion-message');
+
+    // EVENT LOGIN
+    loginBtn.addEventListener('click', () => {
+        const enteredName = inputName.value.trim();
+        const enteredToken = inputToken.value.trim();
+
+        if (enteredName !== "" && validTokens.includes(enteredToken)) {
+            studentName = enteredName;
+            errorMsg.style.display = 'none';
+            loginBox.style.display = 'none';
+            quizBox.style.display = 'block';
+            
+            userDisplay.innerText = `Siswa: ${studentName}`;
+            startQuiz();
+        } else {
+            errorMsg.style.display = 'block';
+        }
+    });
+
+    function startQuiz() {
+        currentQuestionIndex = 0;
+        score = 0;
+        totalTime = 30 * 60; // 30 Menit
+        resultBox.style.display = 'none';
+        completionMessage.innerText = "Berikut adalah hasil pencapaian kompetensi Anda:";
+        
+        clearInterval(timerInterval);
+        startTimer();
+        showQuestion();
+    }
+
+    function startTimer() {
+        updateTimerDisplay();
+        timerInterval = setInterval(() => {
+            totalTime--;
+            updateTimerDisplay();
+
+            if (totalTime <= 0) {
+                clearInterval(timerInterval);
+                completionMessage.innerText = "Waktu Habis! Ujian otomatis dihentikan oleh sistem.";
+                showResults();
+            }
+        }, 1000);
+    }
+
+    function updateTimerDisplay() {
+        const minutes = Math.floor(totalTime / 60);
+        const seconds = totalTime % 60;
+        timerElement.innerText = `⏱ Sisa Waktu: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        
+        if (totalTime < 300) { // Sisa < 5 menit
+            timerElement.style.backgroundColor = "#fee2e2";
+            timerElement.style.color = "#dc2626";
+        } else {
+            timerElement.style.backgroundColor = "#f1f5f9";
+            timerElement.style.color = "#475569";
+        }
+    }
+
+    function showQuestion() {
+        resetState();
+        let currentQuestion = quizData[currentQuestionIndex];
+        
+        progressText.innerText = `Pertanyaan ${currentQuestionIndex + 1} dari ${quizData.length}`;
+        progressBar.style.width = `${((currentQuestionIndex + 1) / quizData.length) * 100}%`;
+        questionElement.innerText = `${currentQuestionIndex + 1}. ${currentQuestion.question}`;
+
+        currentQuestion.options.forEach(option => {
+            const button = document.createElement('button');
+            button.innerText = option.text;
+            button.classList.add('option-btn');
+            if (option.isCorrect) button.dataset.correct = option.isCorrect;
+            button.dataset.rationale = option.rationale;
+            button.addEventListener('click', selectAnswer);
+            optionsContainer.appendChild(button);
+        });
+    }
+
+    function resetState() {
+        nextButton.style.display = 'none';
+        rationaleBox.style.display = 'none';
+        rationaleBox.innerText = '';
+        while (optionsContainer.firstChild) {
+            optionsContainer.removeChild(optionsContainer.firstChild);
+        }
+    }
+
+    function selectAnswer(e) {
+        const selectedButton = e.target;
+        const isCorrect = selectedButton.dataset.correct === "true";
+        
+        if (isCorrect) {
+            selectedButton.classList.add('correct');
+            score++;
+        } else {
+            selectedButton.classList.add('wrong');
+        }
+
+        Array.from(optionsContainer.children).forEach(button => {
+            if (button.dataset.correct === "true") button.classList.add('correct');
+            button.disabled = true;
+        });
+
+        rationaleBox.innerHTML = `<strong>Analisis Soal:</strong> ${selectedButton.dataset.rationale}`;
+        rationaleBox.style.display = 'block';
+
+        nextButton.style.display = 'block';
+        if (quizData.length === currentQuestionIndex + 1) {
+            nextButton.innerText = "Lihat Hasil Skor";
+        } else {
+            nextButton.innerText = "Pertanyaan Berikutnya";
+        }
+    }
+
+    function showResults() {
+        clearInterval(timerInterval);
+        quizBox.style.display = 'none';
+        resultBox.style.display = 'block';
+        
+        const finalScore = Math.round((score / quizData.length) * 100);
+        scoreElement.innerText = finalScore;
+        studentResultName.innerText = `Nama Peserta: ${studentName}`;
+        scoreDetails.innerText = `Anda menjawab benar sebanyak ${score} dari ${quizData.length} pertanyaan.`;
+
+        if (finalScore >= 85) {
+            resultSummary.innerText = "Sangat Kompeten (Lulus Memuaskan!) 🌟";
+            resultSummary.style.color = "var(--success)";
+        } else if (finalScore >= 65) {
+            resultSummary.innerText = "Kompeten (Memenuhi Standar Kelulusan) 👍";
+            resultSummary.style.color = "var(--primary-color)";
+        } else {
+            resultSummary.innerText = "Butuh Pelatihan Tambahan (Tidak Lulus) 📚";
+            resultSummary.style.color = "var(--danger)";
+        }
+    }
+
+    nextButton.addEventListener('click', () => {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < quizData.length) {
+            showQuestion();
+        } else {
+            showResults();
+        }
+    });
+</script>
+</body>
+</html>
